@@ -1,7 +1,7 @@
 # ubuntu update script
 a simple script to update your ubuntu based distro
 
-##'installation'
+## 'installation'
 1. download file 
 2. move it to ``/bin`` directory
 3. make executable with ``chmod +x update``
