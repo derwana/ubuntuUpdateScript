@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# text colors
+TEXT_RESET='\e[0m'
+TEXT_YELLOW='\e[0;33m'
+TEXT_RED='\e[0;31m'
+TEXT_GREEN='\e[0;32m'
+TEXT_WHITE_B='\e[1m'
+
+# user functions
+checkExitStatus() {
+	if [ $? -eq 0 ]
+	then
+		echo -e $TEXT_GREEN
+		echo "Success"
+   		echo -e $TEXT_RESET
+	else
+		echo -e $TEXT_RED
+		echo "[ERROR] Process Failed!"
+   		echo -e $TEXT_RESET
+		
+		read -p "The last command exited with an error. Exit script? (Y/n) " answer
+
+            	if [ "$answer" != "n" ]; then
+                	exit 1
+            	fi
+	fi
+}
+
+sysinfo() {
+	echo -e $TEXT_WHITE_B
+	echo "## Hello, $USER. Let's update the system."
+	echo -e $TEXT_RESET
+	echo "## your os version is:"
+	lsb_release -a
+	echo
+	do-release-upgrade -c
+	echo
+}
+
+update() {
+	echo -e $TEXT_WHITE_B
+	echo "## updating package list"
+	echo -e $TEXT_RESET
+        sudo apt-get update;
+	checkExitStatus
+
+	echo -e $TEXT_WHITE_B
+	echo "## upgrading packages"
+	echo -e $TEXT_RESET
+        sudo apt-get upgrade -y;
+	checkExitStatus
+}
+
+housekeeping() {
+	echo -e $TEXT_WHITE_B
+	echo "## autoremove"
+	echo -e $TEXT_RESET
+	sudo apt-get autoremove -y;
+	checkExitStatus
+
+	echo -e $TEXT_WHITE_B
+	echo "## autoclean"
+	echo -e $TEXT_RESET
+	sudo apt-get autoclean -y;
+	checkExitStatus
+
+	echo -e $TEXT_WHITE_B
+	echo "## updatedb"
+	echo -e $TEXT_RESET
+	sudo updatedb;
+	checkExitStatus
+	
+	rebootrequired
+}
+
+rebootrequired() {
+	if [ -f /var/run/reboot-required ]; then
+    		echo -e $TEXT_RED
+   	 	echo "## reboot required!"
+    		echo -e $TEXT_RESET
+	fi
+}
+
+leave() {
+	echo -e $TEXT_WHITE_B
+	echo "## Update Complete!"
+	echo -e $TEXT_RESET
+	exit
+}
+
+# script procedure
+sysinfo
+update
+housekeeping
+leave
