@@ -18,7 +18,7 @@ checkExitStatus() {
 		echo -e $TEXT_RED
 		echo "[ERROR] Process Failed!"
    		echo -e $TEXT_RESET
-		
+
 		read -p "The last command exited with an error. Exit script? (Y/n) " answer
 
             	if [ "$answer" != "n" ]; then
@@ -46,9 +46,9 @@ update() {
 	checkExitStatus
 
 	echo -e $TEXT_WHITE_B
-	echo "## upgrading packages"
+	echo "## upgrading packages (with new ones)"
 	echo -e $TEXT_RESET
-        sudo apt-get upgrade -y;
+				sudo apt-get --with-new-pkgs upgrade -y;
 	checkExitStatus
 }
 
@@ -70,15 +70,15 @@ housekeeping() {
 	echo -e $TEXT_RESET
 	sudo updatedb;
 	checkExitStatus
-	
+
 	rebootrequired
 }
 
 rebootrequired() {
 	if [ -f /var/run/reboot-required ]; then
-    		echo -e $TEXT_RED
+    	echo -e $TEXT_RED
    	 	echo "## reboot required!"
-    		echo -e $TEXT_RESET
+    	echo -e $TEXT_RESET
 	fi
 }
 
