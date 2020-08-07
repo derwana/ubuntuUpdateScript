@@ -27,6 +27,21 @@ checkExitStatus() {
 	fi
 }
 
+checkUpgradeStatus() {
+        if [ $? -eq 0 ]
+        then
+                echo "## Starting Upgrade to new LTS Version"
+		sudo do-release-upgrade
+        fi
+}
+
+greeting() {
+	echo "This script can be found as /bin/update"
+        echo -e $TEXT_WHITE_B
+        echo "## Hello, $USER. Let's update the system."
+        echo -e $TEXT_RESET
+}
+
 sysinfo() {
 	echo -e $TEXT_WHITE_B
 	echo "## Hello, $USER. Let's update the system."
@@ -48,7 +63,7 @@ update() {
 	echo -e $TEXT_WHITE_B
 	echo "## upgrading packages (with new ones)"
 	echo -e $TEXT_RESET
-				sudo apt-get --with-new-pkgs upgrade -y;
+	sudo apt-get --with-new-pkgs upgrade -y;
 	checkExitStatus
 }
 
@@ -90,7 +105,9 @@ leave() {
 }
 
 # script procedure
-sysinfo
+greeting
 update
 housekeeping
+sysinfo
 leave
+
